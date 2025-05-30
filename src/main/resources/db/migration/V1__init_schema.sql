@@ -2,7 +2,7 @@ CREATE TABLE shelters (
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(100) NOT NULL,
     city VARCHAR(50) NOT NULL,
-    number VARCHAR(20),
+    phone_number VARCHAR(20),
     email VARCHAR(100)
 );
 
