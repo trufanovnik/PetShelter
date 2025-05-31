@@ -33,7 +33,7 @@ CREATE TABLE user_favorite_pets (
     user_id BIGINT NOT NULL REFERENCES users(id),
     pet_id BIGINT NOT NULL REFERENCES pets(id),
     PRIMARY KEY (user_id, pet_id)
-)
+);
 
 CREATE TABLE comments (
     id BIGSERIAL PRIMARY KEY,
