@@ -28,9 +28,9 @@ public class Shelter {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "shelter_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
 
-    @OneToMany(mappedBy = "shelter_id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 }
