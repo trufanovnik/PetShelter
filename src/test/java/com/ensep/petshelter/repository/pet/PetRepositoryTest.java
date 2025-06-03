@@ -68,6 +68,7 @@ public class PetRepositoryTest {
         testComment.setAuthor(testUser);
         testComment.setPet(testPet);
         testComment.setCreatedAt(LocalDateTime.now());
+        testPet.getComments().add(testComment);
         entityManager.persist(testComment);
 
         entityManager.flush();
@@ -92,5 +93,22 @@ public class PetRepositoryTest {
         assertThrows(jakarta.persistence.PersistenceException.class, () -> {
             entityManager.persistAndFlush(pet);
         });
+    }
+
+    @Test
+    void whenAddComment_thenPetCommentsCollectionUpdated() {
+        Comment newComment = new Comment();
+        newComment.setContent("New comment");
+        newComment.setAuthor(testUser);
+        newComment.setPet(testPet);
+        newComment.setCreatedAt(LocalDateTime.now());
+        commentRepository.save(newComment);
+        testPet.getComments().add(newComment);
+
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        assertThat(updatedPet.getComments())
+                .hasSize(2)
+                .extracting(Comment::getContent)
+                .containsExactlyInAnyOrder("Great pet!", "New comment");
     }
 }
