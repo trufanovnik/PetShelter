@@ -68,7 +68,7 @@ public class PetRepositoryTest {
         testComment.setAuthor(testUser);
         testComment.setPet(testPet);
         testComment.setCreatedAt(LocalDateTime.now());
-        testPet.getComments().add(testComment);
+        testPet.addComment(testComment);
         entityManager.persist(testComment);
 
         entityManager.flush();
@@ -103,12 +103,22 @@ public class PetRepositoryTest {
         newComment.setPet(testPet);
         newComment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(newComment);
-        testPet.getComments().add(newComment);
+        testPet.addComment(newComment);
 
         Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
         assertThat(updatedPet.getComments())
                 .hasSize(2)
                 .extracting(Comment::getContent)
                 .containsExactlyInAnyOrder("Great pet!", "New comment");
+    }
+
+    @Test
+    void whenRemoveComment_thenPetCommentsAndUserCommentsCollectionUpdated(){
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        updatedPet.removeComment(testComment);
+        assertThat(updatedPet.getComments())
+                .hasSize(0);
+        assertThat(testUser.getComments())
+                .hasSize(0);
     }
 }
