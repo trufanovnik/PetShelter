@@ -37,17 +37,4 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "pet_id")
     private Pet pet;
-
-    @PreRemove
-    private void preRemove() {
-        if (this.author != null) {
-            this.author.getComments().remove(this);
-        }
-        if (this.shelter != null) {
-            this.shelter.getComments().remove(this);
-        }
-        if (this.pet != null) {
-            this.pet.getComments().remove(this);
-        }
-    }
 }

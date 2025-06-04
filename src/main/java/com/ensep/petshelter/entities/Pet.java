@@ -44,16 +44,6 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
-        comment.setPet(this);
-    }
-
-    public void removeComment(Comment comment) {
-        comments.remove(comment);
-        comment.setPet(null);
-    }
-
     @ElementCollection
     @CollectionTable(name = "pet_photos", joinColumns = @JoinColumn(name = "pet_id"))
     @Column(name = "photo_url")
