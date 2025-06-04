@@ -68,7 +68,7 @@ public class PetRepositoryTest {
         testComment.setAuthor(testUser);
         testComment.setPet(testPet);
         testComment.setCreatedAt(LocalDateTime.now());
-        testPet.addComment(testComment);
+        testPet.getComments().add(testComment);
         entityManager.persist(testComment);
 
         entityManager.flush();
@@ -103,7 +103,7 @@ public class PetRepositoryTest {
         newComment.setPet(testPet);
         newComment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(newComment);
-        testPet.addComment(newComment);
+        testPet.getComments().add(newComment);
 
         Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
         assertThat(updatedPet.getComments())
@@ -115,10 +115,26 @@ public class PetRepositoryTest {
     @Test
     void whenRemoveComment_thenPetCommentsAndUserCommentsCollectionUpdated(){
         Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
-        updatedPet.removeComment(testComment);
+        updatedPet.getComments().remove(testComment);
         assertThat(updatedPet.getComments())
                 .hasSize(0);
         assertThat(testUser.getComments())
                 .hasSize(0);
+    }
+
+    @Test
+    void whenRemoveComment_thenPetCommentsAndShelterCommentsCollectionUpdated(){
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        updatedPet.getComments().remove(testComment);
+        assertThat(updatedPet.getComments())
+                .hasSize(0);
+        assertThat(testShelter.getComments())
+                .hasSize(0);
+    }
+
+    @Test
+    void whenDeletePet_thenCommentsDeleted(){
+        testShelter.getPets().remove(testPet);
+        assertThat(testUser.getComments()).isEmpty();
     }
 }
