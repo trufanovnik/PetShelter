@@ -137,4 +137,10 @@ public class PetRepositoryTest {
         testShelter.getPets().remove(testPet);
         assertThat(testUser.getComments()).isEmpty();
     }
+
+    @Test
+    void whenDeleteUser_thenFavoriteByUserUpdated(){
+        userRepository.delete(testUser);
+        assertThat(testPet.getFavoritedByUsers()).isEmpty();
+    }
 }
