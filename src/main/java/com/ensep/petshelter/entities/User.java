@@ -24,6 +24,12 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @ManyToMany
     @JoinTable(
             name = "user_favorite_pets",
@@ -32,6 +38,6 @@ public class User {
     )
     private Set<Pet> favoritePets = new HashSet<>();
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 }
