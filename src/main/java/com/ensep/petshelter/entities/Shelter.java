@@ -1,5 +1,6 @@
 package com.ensep.petshelter.entities;
 
+import com.ensep.petshelter.repositories.CommentRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,4 +34,14 @@ public class Shelter {
 
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Comment comment){
+        comments.add(comment);
+        comment.setShelter(this);
+    }
+
+    public void removeComment(Comment comment){
+        comments.remove(comment);
+        comment.setShelter(null);
+    }
 }
