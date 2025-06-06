@@ -3,14 +3,17 @@ package com.ensep.petshelter.entities;
 import com.ensep.petshelter.repositories.CommentRepository;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "shelters")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Shelter {
     @Id

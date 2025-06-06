@@ -1,8 +1,9 @@
 package com.ensep.petshelter.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "pets")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Pet {
     @Id
