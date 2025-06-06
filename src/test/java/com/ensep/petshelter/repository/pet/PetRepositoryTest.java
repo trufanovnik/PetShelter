@@ -1,15 +1,13 @@
 package com.ensep.petshelter.repository.pet;
 
 import com.ensep.petshelter.entities.*;
-import com.ensep.petshelter.repositories.CommentRepository;
-import com.ensep.petshelter.repositories.PetRepository;
-import com.ensep.petshelter.repositories.ShelterRepository;
-import com.ensep.petshelter.repositories.UserRepository;
+import com.ensep.petshelter.repositories.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,10 +33,14 @@ public class PetRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private LikeRepository likeRepository;
+
     private User testUser;
     private Shelter testShelter;
     private Pet testPet;
     private Comment testComment;
+    private Like testLike;
 
     @BeforeEach
     void init(){
@@ -52,7 +54,7 @@ public class PetRepositoryTest {
         testUser.setEmail("email@email.com");
         testUser.setUsername("igor123");
         testUser.setPassword("123");
-        entityManager.persist(testUser);
+        userRepository.save(testUser);
 
         testPet = new Pet();
         testPet.setName("Zodiac");
@@ -60,14 +62,19 @@ public class PetRepositoryTest {
         testPet.setAnimal_kind(AnimalKind.DOG);
         testPet.setShelter(testShelter);
         testPet.getPhotoUrls().addAll(List.of("photo1.jpg", "photo2.jpg"));
-        entityManager.persist(testPet);
+        petRepository.save(testPet);
 
         testComment = new Comment();
         testComment.setContent("Great pet!");
         testComment.setAuthor(testUser);
         testComment.setPet(testPet);
         testComment.setCreatedAt(LocalDateTime.now());
-        entityManager.persist(testComment);
+        commentRepository.save(testComment);
+
+        testLike = new Like();
+        testLike.setUser(testUser);
+        testLike.setPet(testPet);
+        likeRepository.save(testLike);
 
         entityManager.flush();
     }
@@ -83,56 +90,73 @@ public class PetRepositoryTest {
         assertThat(found.getLikes()).isEmpty();
     }
 
-//    @Test
-//    void whenCreatePetWithoutShelter_thenThrowException() {
-//        Pet pet = new Pet();
-//        pet.setName("No Shelter Pet");
-//
-//        assertThrows(jakarta.persistence.PersistenceException.class, () -> {
-//            entityManager.persistAndFlush(pet);
-//        });
-//    }
-//
-//    @Test
-//    void whenAddComment_thenPetCommentsCollectionUpdated() {
-//        Comment newComment = new Comment();
-//        newComment.setContent("New comment");
-//        newComment.setAuthor(testUser);
-//        newComment.setPet(testPet);
-//        newComment.setCreatedAt(LocalDateTime.now());
-//        commentRepository.save(newComment);
-//        testPet.getComments().add(newComment);
-//
-//        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
-//        assertThat(updatedPet.getComments())
-//                .hasSize(2)
-//                .extracting(Comment::getContent)
-//                .containsExactlyInAnyOrder("Great pet!", "New comment");
-//    }
-//
-//    @Test
-//    void whenRemoveComment_thenPetCommentsAndUserCommentsCollectionUpdated(){
-//        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
-//        updatedPet.getComments().remove(testComment);
-//        assertThat(updatedPet.getComments())
-//                .hasSize(0);
-//        assertThat(testUser.getComments())
-//                .hasSize(0);
-//    }
-//
-//    @Test
-//    void whenRemoveComment_thenPetCommentsAndShelterCommentsCollectionUpdated(){
-//        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
-//        updatedPet.getComments().remove(testComment);
-//        assertThat(updatedPet.getComments())
-//                .hasSize(0);
-//        assertThat(testShelter.getComments())
-//                .hasSize(0);
-//    }
-//
-//    @Test
-//    void whenDeletePet_thenCommentsDeleted(){
-//        testShelter.getPets().remove(testPet);
-//        assertThat(testUser.getComments()).isEmpty();
-//    }
+    @Test
+    void whenCreatePetWithoutShelter_thenThrowException() {
+        Pet pet = new Pet();
+        pet.setName("No Shelter Pet");
+
+        assertThrows(jakarta.persistence.PersistenceException.class, () -> {
+            entityManager.persistAndFlush(pet);
+        });
+    }
+
+    @Test
+    void whenAddComment_thenPetCommentsCollectionUpdated() {
+        Comment newComment = new Comment();
+        newComment.setContent("New comment");
+        newComment.setAuthor(testUser);
+        newComment.setPet(testPet);
+        newComment.setCreatedAt(LocalDateTime.now());
+
+        testPet.getComments().add(newComment);
+
+        commentRepository.save(newComment);
+        petRepository.save(testPet);
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        assertThat(updatedPet.getComments())
+                .hasSize(2)
+                .extracting(Comment::getContent)
+                .containsExactlyInAnyOrder("Great pet!", "New comment");
+    }
+
+    @Test
+    void whenRemoveComment_thenPetCommentsAndUserCommentsCollectionUpdated(){
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        commentRepository.delete(testComment);
+        assertThat(updatedPet.getComments())
+                .hasSize(0);
+        assertThat(testUser.getComments())
+                .hasSize(0);
+    }
+
+    @Test
+    void whenRemoveComment_thenPetCommentsAndShelterCommentsCollectionUpdated(){
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        commentRepository.delete(testComment);
+        assertThat(updatedPet.getComments())
+                .hasSize(0);
+        assertThat(testShelter.getComments())
+                .hasSize(0);
+    }
+
+    @Test
+    void whenDeletePet_thenCommentsDeleted(){
+        petRepository.delete(testPet);
+        assertThat(testUser.getComments()).isEmpty();
+    }
+
+    @Test
+    void whenPetGetLike_thenPetAndUserUpdated(){
+        Like testLike = new Like();
+        testLike.setPet(testPet);
+        testLike.setUser(testUser);
+        testPet.getLikes().add(testLike);
+
+        Pet updatedPet = petRepository.findById(testPet.getId()).orElseThrow();
+        assertThat(updatedPet.getLikes()).contains(testLike);
+    }
 }
