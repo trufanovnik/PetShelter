@@ -7,9 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "pets")
@@ -37,9 +35,6 @@ public class Pet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
-
-    @ManyToMany(mappedBy = "favoritePets")
-    private Set<User> favoritedByUsers = new HashSet<>();
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
