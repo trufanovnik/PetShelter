@@ -39,6 +39,9 @@ public class Pet {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
     @ElementCollection
     @CollectionTable(name = "pet_photos", joinColumns = @JoinColumn(name = "pet_id"))
     @Column(name = "photo_url")
