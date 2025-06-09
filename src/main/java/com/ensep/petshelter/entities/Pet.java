@@ -1,19 +1,19 @@
 package com.ensep.petshelter.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "pets")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Pet {
     @Id
@@ -38,11 +38,11 @@ public class Pet {
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
 
-    @ManyToMany(mappedBy = "favoritePets")
-    private Set<User> favoritedByUsers = new HashSet<>();
-
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "pet_photos", joinColumns = @JoinColumn(name = "pet_id"))
