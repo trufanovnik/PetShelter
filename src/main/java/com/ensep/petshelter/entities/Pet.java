@@ -38,7 +38,7 @@ public class Pet {
     @JoinColumn(name = "shelter_id", nullable = false)
     private Shelter shelter;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
