@@ -55,7 +55,7 @@ public class PetRepositoryTest {
         pet = new Pet();
         pet.setName("Zodiac");
         pet.setDescription("Funny boy");
-        pet.setAnimal_kind(AnimalKind.DOG);
+        pet.setAnimalKind(AnimalKind.DOG);
         pet.setShelter(shelter);
         pet.getPhotoUrls().addAll(List.of("photo1.jpg", "photo2.jpg"));
         pet = petRepository.save(pet);
