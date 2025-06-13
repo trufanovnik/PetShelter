@@ -32,7 +32,7 @@ public class Pet {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "animal_kind")
-    private AnimalKind animal_kind;
+    private AnimalKind animalKind;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id", nullable = false)
