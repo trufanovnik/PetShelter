@@ -29,10 +29,11 @@ CREATE TABLE pet_photos (
     PRIMARY KEY (pet_id, photo_url)
 );
 
-CREATE TABLE user_favorite_pets (
+CREATE TABLE likes (
+    id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id),
     pet_id BIGINT NOT NULL REFERENCES pets(id),
-    PRIMARY KEY (user_id, pet_id)
+    UNIQUE (user_id, pet_id)
 );
 
 CREATE TABLE comments (
