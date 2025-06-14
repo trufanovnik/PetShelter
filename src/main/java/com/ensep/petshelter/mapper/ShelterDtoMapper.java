@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { PetDtoMapper.class })
 public interface ShelterDtoMapper {
 
     ShelterDto toShelterDto(Shelter shelter);
