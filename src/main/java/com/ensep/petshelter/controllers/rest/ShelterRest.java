@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/shelter")
@@ -31,5 +32,16 @@ public class ShelterRest {
     @PostMapping
     public ResponseEntity<Shelter> createShelter(@RequestBody Shelter shelter){
         return ResponseEntity.ok(shelterService.createShelter(shelter));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteShelter(@PathVariable Long id){
+        shelterService.removeShelter(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/{id}")
+    public ResponseEntity<ShelterDto> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
+        return ResponseEntity.ok(shelterService.updateShelter(id, updates));
     }
 }

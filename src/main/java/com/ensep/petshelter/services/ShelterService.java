@@ -5,8 +5,11 @@ import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ShelterService {
@@ -31,5 +34,21 @@ public class ShelterService {
 
     public Shelter createShelter(Shelter shelter){
         return shelterRepository.save(shelter);
+    }
+
+    public void removeShelter(Long id){
+        shelterRepository.deleteById(id);
+    }
+
+    public ShelterDto updateShelter(Long id, Map<String, Object> updates){
+        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        updates.forEach((fieldName, fieldValue) -> {
+            Field field = ReflectionUtils.findField(Shelter.class, fieldName);
+            if (field != null){
+                field.setAccessible(true);
+                ReflectionUtils.setField(field, shelter, fieldValue);
+            }
+        });
+        return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
     }
 }
