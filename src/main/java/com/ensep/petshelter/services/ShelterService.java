@@ -28,4 +28,8 @@ public class ShelterService {
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         return shelterDtoMapper.toShelterDto(shelter);
     }
+
+    public Shelter createShelter(Shelter shelter){
+        return shelterRepository.save(shelter);
+    }
 }

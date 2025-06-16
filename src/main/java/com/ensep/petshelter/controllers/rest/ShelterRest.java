@@ -1,6 +1,7 @@
 package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.dto.ShelterDto;
+import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.services.ShelterService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/shelter")
+@RequestMapping("/api/shelter")
 public class ShelterRest {
 
     private final ShelterService shelterService;
@@ -25,5 +26,10 @@ public class ShelterRest {
     @GetMapping("/{id}")
     public ResponseEntity<ShelterDto> findById(@PathVariable Long id){
         return ResponseEntity.ok(shelterService.findById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Shelter> createShelter(@RequestBody Shelter shelter){
+        return ResponseEntity.ok(shelterService.createShelter(shelter));
     }
 }
