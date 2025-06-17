@@ -1,8 +1,11 @@
 package com.ensep.petshelter.services;
 
+import com.ensep.petshelter.dto.PetDto;
 import com.ensep.petshelter.dto.ShelterDto;
+import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
+import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -10,15 +13,18 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
+    private final PetRepository petRepository;
     private final ShelterDtoMapper shelterDtoMapper;
 
-    public ShelterService(ShelterRepository shelterRepository, ShelterDtoMapper shelterDtoMapper) {
+    public ShelterService(ShelterRepository shelterRepository, PetRepository petRepository, ShelterDtoMapper shelterDtoMapper) {
         this.shelterRepository = shelterRepository;
+        this.petRepository = petRepository;
         this.shelterDtoMapper = shelterDtoMapper;
     }
 
@@ -50,5 +56,16 @@ public class ShelterService {
             }
         });
         return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
+    }
+
+    public ShelterDto addNewPet(Long id, PetDto pet){
+        Shelter shelter = shelterRepository.findById(id).orElseThrow();
+        Pet newPet = new Pet();
+        newPet.setName(pet.getName());
+        newPet.setDescription(pet.getDescription());
+        newPet.setShelter(shelter);
+        newPet.setAnimalKind(pet.getAnimalKind());
+        petRepository.save(newPet);
+        return shelterDtoMapper.toShelterDto(shelter);
     }
 }

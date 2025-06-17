@@ -1,22 +1,29 @@
 package com.ensep.petshelter.controllers.rest;
 
+import com.ensep.petshelter.dto.PetDto;
 import com.ensep.petshelter.dto.ShelterDto;
+import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
+import com.ensep.petshelter.repositories.ShelterRepository;
 import com.ensep.petshelter.services.ShelterService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/shelter")
 public class ShelterRest {
 
     private final ShelterService shelterService;
+    private final ShelterRepository shelterRepository;
 
-    public ShelterRest(ShelterService shelterService) {
+    public ShelterRest(ShelterService shelterService, ShelterRepository shelterRepository) {
         this.shelterService = shelterService;
+        this.shelterRepository = shelterRepository;
     }
 
     @GetMapping("/all")
@@ -44,4 +51,19 @@ public class ShelterRest {
     public ResponseEntity<ShelterDto> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
         return ResponseEntity.ok(shelterService.updateShelter(id, updates));
     }
+
+    @PostMapping(value = "/{id}/addPet")
+    public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDto pet){
+        Optional<Shelter> shelter = shelterRepository.findById(id);
+        if (shelter.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Приют с ID: " + id + " не найден");
+        }
+        return ResponseEntity.ok(shelterService.addNewPet(id, pet));
+    }
+
+//    @PatchMapping(value = "/{id}/{petId}")
+//    public ResponseEntity<?> updatePet(@PathVariable Long id,
+//                                       @PathVariable Long petId,
+//                                       @RequestBody Pet pet)
 }
