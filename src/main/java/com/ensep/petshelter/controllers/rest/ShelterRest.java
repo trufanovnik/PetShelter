@@ -60,6 +60,16 @@ public class ShelterRest {
         return ResponseEntity.ok(shelterService.updateShelter(id, updates));
     }
 
+    @GetMapping(value = "/{id}/allPets")
+    public ResponseEntity<?> findAllPets(@PathVariable Long id){
+        Optional<Shelter> shelter = shelterRepository.findById(id);
+        if (shelter.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Приют с ID: " + id + " не найден");
+        }
+        return ResponseEntity.ok(shelterService.findAllPets(id));
+    }
+
     @PostMapping(value = "/{id}/addPet")
     public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDto pet){
         Optional<Shelter> shelter = shelterRepository.findById(id);

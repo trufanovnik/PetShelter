@@ -61,6 +61,12 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
     }
 
+    public List<PetDto> findAllPets(Long id){
+        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        List<PetDto> pets = petDtoMapper.toPetDtoList(shelter.getPets());
+        return pets;
+    }
+
     public ShelterDto addNewPet(Long id, PetDto pet){
         Shelter shelter = shelterRepository.findById(id).orElseThrow();
         Pet newPet = new Pet();
