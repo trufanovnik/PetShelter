@@ -4,6 +4,7 @@ import com.ensep.petshelter.dto.PetDto;
 import com.ensep.petshelter.dto.ShelterDto;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
+import com.ensep.petshelter.mapper.PetDtoMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
@@ -19,13 +20,15 @@ import java.util.Optional;
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
-    private final PetRepository petRepository;
     private final ShelterDtoMapper shelterDtoMapper;
+    private final PetRepository petRepository;
+    private final PetDtoMapper petDtoMapper;
 
-    public ShelterService(ShelterRepository shelterRepository, PetRepository petRepository, ShelterDtoMapper shelterDtoMapper) {
+    public ShelterService(ShelterRepository shelterRepository, PetRepository petRepository, ShelterDtoMapper shelterDtoMapper, PetDtoMapper petDtoMapper) {
         this.shelterRepository = shelterRepository;
         this.petRepository = petRepository;
         this.shelterDtoMapper = shelterDtoMapper;
+        this.petDtoMapper = petDtoMapper;
     }
 
     public List<ShelterDto> findAllShelters(){
@@ -67,5 +70,28 @@ public class ShelterService {
         newPet.setAnimalKind(pet.getAnimalKind());
         petRepository.save(newPet);
         return shelterDtoMapper.toShelterDto(shelter);
+    }
+
+    public PetDto updatePet(Long id, Long petId, Map<String, Object> updates){
+        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Pet pet = petRepository.findById(petId).orElse(null);
+
+        updates.forEach((fieldName, fieldValue) -> {
+            Field field = ReflectionUtils.findField(Pet.class, fieldName);
+            if (field != null){
+                field.setAccessible(true);
+                if (field.getType().isEnum() && fieldValue instanceof String) {
+                    try {
+                        Object enumValue = Enum.valueOf((Class<Enum>) field.getType(), ((String) fieldValue).toUpperCase());
+                        ReflectionUtils.setField(field, pet, enumValue);
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException("Некорректное значение для поля " + fieldName + ": " + fieldValue, e);
+                    }
+                } else {
+                    ReflectionUtils.setField(field, pet, fieldValue);
+                }
+            }
+        });
+        return petDtoMapper.toPetDto(petRepository.save(pet));
     }
 }
