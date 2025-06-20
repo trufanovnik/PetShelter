@@ -80,7 +80,7 @@ public class ShelterRest {
         return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
-    @PatchMapping(value = "/{id}/{petId}")
+    @PatchMapping(value = "/{id}/pets/{petId}")
     public ResponseEntity<?> updatePet(@PathVariable Long id,
                                        @PathVariable Long petId,
                                        @RequestBody Map<String, Object> updates) {
@@ -95,5 +95,21 @@ public class ShelterRest {
                     .body("Питомец с ID: " + petId + " не найден");
         }
         return ResponseEntity.ok(shelterService.updatePet(id, petId, updates));
+    }
+
+    @DeleteMapping(value = "/{id}/pets/{petId}")
+    public ResponseEntity<?> deletePetById(@PathVariable Long id,
+                                           @PathVariable Long petId) {
+        Optional<Shelter> shelter = shelterRepository.findById(id);
+        if (shelter.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Приют с ID: " + id + " не найден");
+        }
+        Optional<Pet> pet = petRepository.findById(petId);
+        if (pet.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Питомец с ID: " + petId + " не найден");
+        }
+        return shelterService.deletePetById(id, petId);
     }
 }
