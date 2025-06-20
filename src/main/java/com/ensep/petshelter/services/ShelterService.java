@@ -8,15 +8,18 @@ import com.ensep.petshelter.mapper.PetDtoMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
+@Transactional
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
@@ -76,6 +79,17 @@ public class ShelterService {
         newPet.setAnimalKind(pet.getAnimalKind());
         petRepository.save(newPet);
         return shelterDtoMapper.toShelterDto(shelter);
+    }
+
+    public ResponseEntity<?> deletePetById(Long id, Long petId){
+        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Pet pet = petRepository.findById(petId).orElse(null);
+        if (!shelter.getPets().contains(pet)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Данный питомец не принадлежит этому приюту.");
+        }
+        shelter.getPets().remove(pet);
+        return ResponseEntity.noContent().build();
     }
 
     public PetDto updatePet(Long id, Long petId, Map<String, Object> updates){
