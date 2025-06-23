@@ -1,7 +1,7 @@
 package com.ensep.petshelter.services;
 
-import com.ensep.petshelter.dto.PetDto;
-import com.ensep.petshelter.dto.ShelterDto;
+import com.ensep.petshelter.dto.PetDTO;
+import com.ensep.petshelter.dto.ShelterDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.PetDtoMapper;
@@ -34,12 +34,12 @@ public class ShelterService {
         this.petDtoMapper = petDtoMapper;
     }
 
-    public List<ShelterDto> findAllShelters(){
+    public List<ShelterDTO> findAllShelters(){
         List<Shelter> shelters = shelterRepository.findAll();
         return shelterDtoMapper.toShelterDtoList(shelters);
     }
 
-    public ShelterDto findById(Long id){
+    public ShelterDTO findById(Long id){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         return shelterDtoMapper.toShelterDto(shelter);
     }
@@ -52,7 +52,7 @@ public class ShelterService {
         shelterRepository.deleteById(id);
     }
 
-    public ShelterDto updateShelter(Long id, Map<String, Object> updates){
+    public ShelterDTO updateShelter(Long id, Map<String, Object> updates){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         updates.forEach((fieldName, fieldValue) -> {
             Field field = ReflectionUtils.findField(Shelter.class, fieldName);
@@ -64,13 +64,13 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
     }
 
-    public List<PetDto> findAllPets(Long id){
+    public List<PetDTO> findAllPets(Long id){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
-        List<PetDto> pets = petDtoMapper.toPetDtoList(shelter.getPets());
+        List<PetDTO> pets = petDtoMapper.toPetDtoList(shelter.getPets());
         return pets;
     }
 
-    public ShelterDto addNewPet(Long id, PetDto pet){
+    public ShelterDTO addNewPet(Long id, PetDTO pet){
         Shelter shelter = shelterRepository.findById(id).orElseThrow();
         Pet newPet = new Pet();
         newPet.setName(pet.getName());
@@ -92,7 +92,7 @@ public class ShelterService {
         return ResponseEntity.noContent().build();
     }
 
-    public PetDto updatePet(Long id, Long petId, Map<String, Object> updates){
+    public PetDTO updatePet(Long id, Long petId, Map<String, Object> updates){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         Pet pet = petRepository.findById(petId).orElse(null);
 

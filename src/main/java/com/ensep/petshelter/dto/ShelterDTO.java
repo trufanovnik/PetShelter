@@ -5,9 +5,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ShelterDto {
+public class ShelterDTO {
     private Long id;
     private String title;
     private String city;
-    private List<PetDto> pets;
+    private List<PetDTO> pets;
 }
