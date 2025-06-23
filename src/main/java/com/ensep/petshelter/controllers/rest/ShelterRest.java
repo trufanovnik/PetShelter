@@ -1,7 +1,7 @@
 package com.ensep.petshelter.controllers.rest;
 
-import com.ensep.petshelter.dto.PetDto;
-import com.ensep.petshelter.dto.ShelterDto;
+import com.ensep.petshelter.dto.PetDTO;
+import com.ensep.petshelter.dto.ShelterDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.repositories.PetRepository;
@@ -30,12 +30,12 @@ public class ShelterRest {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShelterDto>> findAllShelters(){
+    public ResponseEntity<List<ShelterDTO>> findAllShelters(){
         return ResponseEntity.ok(shelterService.findAllShelters());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShelterDto> findById(@PathVariable Long id){
+    public ResponseEntity<ShelterDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(shelterService.findById(id));
     }
 
@@ -60,7 +60,7 @@ public class ShelterRest {
         return ResponseEntity.ok(shelterService.updateShelter(id, updates));
     }
 
-    @GetMapping(value = "/{id}/allPets")
+    @GetMapping(value = "/{id}/pets")
     public ResponseEntity<?> findAllPets(@PathVariable Long id){
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isEmpty()){
@@ -70,8 +70,8 @@ public class ShelterRest {
         return ResponseEntity.ok(shelterService.findAllPets(id));
     }
 
-    @PostMapping(value = "/{id}/addPet")
-    public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDto pet){
+    @PostMapping(value = "/{id}/pets/addPet")
+    public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDTO pet){
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
