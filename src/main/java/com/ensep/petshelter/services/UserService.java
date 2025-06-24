@@ -39,4 +39,8 @@ public class UserService {
         });
         return userEntityDtoMapper.userEntityToUserEntityDto(userRepository.save(user));
     }
+
+    public void removeUser(Long id){
+        userRepository.deleteById(id);
+    }
 }

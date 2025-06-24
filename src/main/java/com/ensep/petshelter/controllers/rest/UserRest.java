@@ -25,4 +25,10 @@ public class UserRest {
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates){
         return ResponseEntity.ok(userService.updateUser(id, updates));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id){
+        userService.removeUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
