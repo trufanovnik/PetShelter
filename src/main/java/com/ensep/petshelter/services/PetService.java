@@ -1,5 +1,6 @@
 package com.ensep.petshelter.services;
 
+import com.ensep.petshelter.dto.comment.CommentDTO;
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.pet.PetDetailsDTO;
 import com.ensep.petshelter.entities.Comment;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -35,6 +37,18 @@ public class PetService {
 
     public PetDetailsDTO findById(Long id){
         Pet pet = petRepository.findById(id).orElse(null);
+        return petDtoMapper.toPetDetailsDTO(pet);
+    }
+
+    public PetDetailsDTO addComment(Long id, Comment comment){
+        Pet pet = petRepository.findById(id).orElse(null);
+        Comment newComment = new Comment();
+        newComment.setContent(comment.getContent());
+        newComment.setPet(pet);
+        newComment.setAuthor(comment.getAuthor());
+        newComment.setShelter(comment.getShelter());
+        newComment.setCreatedAt(LocalDateTime.now());
+        commentRepository.save(newComment);
         return petDtoMapper.toPetDetailsDTO(pet);
     }
 
