@@ -1,5 +1,6 @@
-package com.ensep.petshelter.dto;
+package com.ensep.petshelter.dto.user;
 
+import com.ensep.petshelter.dto.pet.PetDTO;
 import lombok.Data;
 
 import java.util.List;

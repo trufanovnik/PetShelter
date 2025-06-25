@@ -1,6 +1,6 @@
 package com.ensep.petshelter.services;
 
-import com.ensep.petshelter.dto.UserEntityDTO;
+import com.ensep.petshelter.dto.user.UserEntityDTO;
 import com.ensep.petshelter.entities.UserEntity;
 import com.ensep.petshelter.mapper.UserEntityDtoMapper;
 import com.ensep.petshelter.repositories.UserRepository;

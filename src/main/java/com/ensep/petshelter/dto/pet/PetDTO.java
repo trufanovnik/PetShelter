@@ -1,4 +1,4 @@
-package com.ensep.petshelter.dto;
+package com.ensep.petshelter.dto.pet;
 
 import com.ensep.petshelter.entities.AnimalKind;
 import lombok.Data;

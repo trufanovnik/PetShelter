@@ -1,7 +1,7 @@
 package com.ensep.petshelter.mapper;
 
-import com.ensep.petshelter.dto.PetDTO;
-import com.ensep.petshelter.dto.UserEntityDTO;
+import com.ensep.petshelter.dto.pet.PetDTO;
+import com.ensep.petshelter.dto.user.UserEntityDTO;
 import com.ensep.petshelter.entities.Like;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.UserEntity;

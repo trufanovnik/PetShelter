@@ -1,7 +1,7 @@
 package com.ensep.petshelter.controllers.rest;
 
-import com.ensep.petshelter.dto.PetDTO;
-import com.ensep.petshelter.dto.ShelterDTO;
+import com.ensep.petshelter.dto.pet.PetDTO;
+import com.ensep.petshelter.dto.shelter.ShelterDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.repositories.PetRepository;
