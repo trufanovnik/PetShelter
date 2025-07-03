@@ -47,7 +47,7 @@ public class PetService {
         return petDtoMapper.toPetDetailsDTO(pet);
     }
 
-    public ResponseEntity<?> deleteCommentById(Long petId, Long commentId){
+    public ResponseEntity<String> deleteCommentById(Long petId, Long commentId){
         Pet pet = petRepository.findById(petId).orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);
         if (!pet.getComments().contains(comment)){
