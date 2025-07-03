@@ -6,6 +6,7 @@ import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.PetDtoMapper;
+import com.ensep.petshelter.mapper.PetUpdateMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.mapper.ShelterUpdateMapper;
 import com.ensep.petshelter.repositories.PetRepository;
@@ -30,6 +31,7 @@ public class ShelterService {
     private final ShelterUpdateMapper shelterUpdateMapper;
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
+    private final PetUpdateMapper petUpdateMapper;
 
     @Transactional(readOnly = true)
     public List<ShelterDTO> findAllShelters(){
@@ -92,26 +94,11 @@ public class ShelterService {
     }
 
     @Transactional
-    public PetDTO updatePet(Long id, Long petId, Map<String, Object> updates){
+    public PetDTO updatePet(Long id, Long petId, PetDTO petUpdate){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         Pet pet = petRepository.findById(petId).orElse(null);
 
-        updates.forEach((fieldName, fieldValue) -> {
-            Field field = ReflectionUtils.findField(Pet.class, fieldName);
-            if (field != null){
-                field.setAccessible(true);
-                if (field.getType().isEnum() && fieldValue instanceof String) {
-                    try {
-                        Object enumValue = Enum.valueOf((Class<Enum>) field.getType(), ((String) fieldValue).toUpperCase());
-                        ReflectionUtils.setField(field, pet, enumValue);
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Некорректное значение для поля " + fieldName + ": " + fieldValue, e);
-                    }
-                } else {
-                    ReflectionUtils.setField(field, pet, fieldValue);
-                }
-            }
-        });
+        petUpdateMapper.updatePetFromDto(petUpdate, pet);
         return petDtoMapper.toPetDto(petRepository.save(pet));
     }
 }

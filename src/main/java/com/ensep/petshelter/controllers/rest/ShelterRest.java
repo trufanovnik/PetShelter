@@ -63,11 +63,11 @@ public class ShelterRest {
         return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
-    @PatchMapping(value = "/{id}/pets/{petId}")
+    @PutMapping(value = "/{id}/pets/{petId}")
     public ResponseEntity<PetDTO> updatePet(@PathVariable Long id,
                                        @PathVariable Long petId,
-                                       @RequestBody Map<String, Object> updates) {
-        return ResponseEntity.ok(shelterService.updatePet(id, petId, updates));
+                                       @RequestBody PetDTO petUpdate) {
+        return ResponseEntity.ok(shelterService.updatePet(id, petId, petUpdate));
     }
 
     @DeleteMapping(value = "/{id}/pets/{petId}")
