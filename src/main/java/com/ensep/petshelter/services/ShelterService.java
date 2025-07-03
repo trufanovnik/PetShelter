@@ -2,10 +2,12 @@ package com.ensep.petshelter.services;
 
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.PetDtoMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
+import com.ensep.petshelter.mapper.ShelterUpdateMapper;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final ShelterDtoMapper shelterDtoMapper;
+    private final ShelterUpdateMapper shelterUpdateMapper;
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
 
@@ -51,16 +54,10 @@ public class ShelterService {
     }
 
     @Transactional
-    public ShelterDTO updateShelter(Long id, Map<String, Object> updates){
+    public ShelterUpdateDTO updateShelter(Long id, ShelterUpdateDTO shelterUpdate){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
-        updates.forEach((fieldName, fieldValue) -> {
-            Field field = ReflectionUtils.findField(Shelter.class, fieldName);
-            if (field != null){
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, shelter, fieldValue);
-            }
-        });
-        return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
+        shelterUpdateMapper.updateShelterFromDto(shelterUpdate, shelter);
+        return shelterDtoMapper.toShelterUpdateDto(shelterRepository.save(shelter));
     }
 
     @Transactional(readOnly = true)

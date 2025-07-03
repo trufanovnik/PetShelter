@@ -2,6 +2,7 @@ package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.repositories.PetRepository;
@@ -46,9 +47,10 @@ public class ShelterRest {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/{id}")
-    public ResponseEntity<ShelterDTO> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
-        return ResponseEntity.ok(shelterService.updateShelter(id, updates));
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ShelterUpdateDTO> updateShelter(@PathVariable Long id,
+                                                          @RequestBody ShelterUpdateDTO shelterUpdate){
+        return ResponseEntity.ok(shelterService.updateShelter(id, shelterUpdate));
     }
 
     @GetMapping(value = "/{id}/pets")

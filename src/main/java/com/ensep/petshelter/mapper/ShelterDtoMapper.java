@@ -1,6 +1,7 @@
 package com.ensep.petshelter.mapper;
 
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.Shelter;
 import org.mapstruct.Mapper;
 
@@ -11,4 +12,6 @@ public interface ShelterDtoMapper {
 
     ShelterDTO toShelterDto(Shelter shelter);
     List<ShelterDTO> toShelterDtoList(List<Shelter> shelters);
+
+    ShelterUpdateDTO toShelterUpdateDto(Shelter shelter);
 }
