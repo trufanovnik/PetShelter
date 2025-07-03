@@ -2,18 +2,16 @@ package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.entities.Comment;
 import com.ensep.petshelter.services.PetService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/pet")
 public class PetRest {
 
     private final PetService petService;
-
-    public PetRest(PetService petService) {
-        this.petService = petService;
-    }
 
     @GetMapping("/all")
     public ResponseEntity<?> findAllPets(){

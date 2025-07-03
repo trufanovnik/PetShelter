@@ -1,20 +1,18 @@
 package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserRest {
 
     private final UserService userService;
-
-    public UserRest(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id){

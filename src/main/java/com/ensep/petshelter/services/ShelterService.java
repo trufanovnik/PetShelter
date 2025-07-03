@@ -8,6 +8,7 @@ import com.ensep.petshelter.mapper.PetDtoMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class ShelterService {
 
@@ -26,13 +28,6 @@ public class ShelterService {
     private final ShelterDtoMapper shelterDtoMapper;
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
-
-    public ShelterService(ShelterRepository shelterRepository, PetRepository petRepository, ShelterDtoMapper shelterDtoMapper, PetDtoMapper petDtoMapper) {
-        this.shelterRepository = shelterRepository;
-        this.petRepository = petRepository;
-        this.shelterDtoMapper = shelterDtoMapper;
-        this.petDtoMapper = petDtoMapper;
-    }
 
     public List<ShelterDTO> findAllShelters(){
         List<Shelter> shelters = shelterRepository.findAll();

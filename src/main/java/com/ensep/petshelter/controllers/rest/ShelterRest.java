@@ -7,6 +7,7 @@ import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import com.ensep.petshelter.services.ShelterService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,18 +17,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/shelter")
 public class ShelterRest {
 
     private final ShelterService shelterService;
     private final ShelterRepository shelterRepository;
     private final PetRepository petRepository;
-
-    public ShelterRest(ShelterService shelterService, ShelterRepository shelterRepository, PetRepository petRepository) {
-        this.shelterService = shelterService;
-        this.shelterRepository = shelterRepository;
-        this.petRepository = petRepository;
-    }
 
     @GetMapping("/all")
     public ResponseEntity<List<ShelterDTO>> findAllShelters(){
