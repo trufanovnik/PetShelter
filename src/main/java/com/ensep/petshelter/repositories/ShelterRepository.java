@@ -7,7 +7,4 @@ import java.util.Optional;
 
 public interface ShelterRepository extends JpaRepository<Shelter, Long> {
     Optional<Shelter> findById(Long id);
-
-    @Override
-    void deleteById(Long id);
 }
