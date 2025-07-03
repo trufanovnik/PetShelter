@@ -47,65 +47,30 @@ public class ShelterRest {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<?> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
+    public ResponseEntity<ShelterDTO> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
         return ResponseEntity.ok(shelterService.updateShelter(id, updates));
     }
 
     @GetMapping(value = "/{id}/pets")
-    public ResponseEntity<?> findAllPets(@PathVariable Long id){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
+    public ResponseEntity<List<PetDTO>> findAllPets(@PathVariable Long id){
         return ResponseEntity.ok(shelterService.findAllPets(id));
     }
 
     @PostMapping(value = "/{id}/pets/addPet")
-    public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDTO pet){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
+    public ResponseEntity<ShelterDTO> addNewPet(@PathVariable Long id, @RequestBody PetDTO pet){
         return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
     @PatchMapping(value = "/{id}/pets/{petId}")
-    public ResponseEntity<?> updatePet(@PathVariable Long id,
+    public ResponseEntity<PetDTO> updatePet(@PathVariable Long id,
                                        @PathVariable Long petId,
                                        @RequestBody Map<String, Object> updates) {
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (pet.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Питомец с ID: " + petId + " не найден");
-        }
         return ResponseEntity.ok(shelterService.updatePet(id, petId, updates));
     }
 
     @DeleteMapping(value = "/{id}/pets/{petId}")
-    public ResponseEntity<?> deletePetById(@PathVariable Long id,
+    public ResponseEntity<String> deletePetById(@PathVariable Long id,
                                            @PathVariable Long petId) {
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (pet.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Питомец с ID: " + petId + " не найден");
-        }
         return shelterService.deletePetById(id, petId);
     }
 }

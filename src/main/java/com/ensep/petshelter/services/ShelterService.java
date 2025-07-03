@@ -76,7 +76,7 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
-    public ResponseEntity<?> deletePetById(Long id, Long petId){
+    public ResponseEntity<String> deletePetById(Long id, Long petId){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         Pet pet = petRepository.findById(petId).orElse(null);
         if (!shelter.getPets().contains(pet)){
