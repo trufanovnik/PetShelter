@@ -1,6 +1,7 @@
 package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.dto.user.UserEntityDTO;
+import com.ensep.petshelter.dto.user.UserEntityUpdateDTO;
 import com.ensep.petshelter.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class UserRest {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserEntityDTO> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates){
-        return ResponseEntity.ok(userService.updateUser(id, updates));
+    @PutMapping("/{id}")
+    public ResponseEntity<UserEntityDTO> updateUser(@PathVariable Long id, @RequestBody UserEntityUpdateDTO userUpdate){
+        return ResponseEntity.ok(userService.updateUser(id, userUpdate));
     }
 
     @DeleteMapping("/{id}")

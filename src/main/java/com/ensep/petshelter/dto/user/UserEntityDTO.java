@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class UserEntityDTO {
     private Long id;
+    private String name;
+    private String email;
     private String username;
     private List<PetDTO> likedPets;
 }
