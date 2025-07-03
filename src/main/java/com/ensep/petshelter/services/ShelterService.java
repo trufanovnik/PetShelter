@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
@@ -29,24 +28,29 @@ public class ShelterService {
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
 
+    @Transactional(readOnly = true)
     public List<ShelterDTO> findAllShelters(){
         List<Shelter> shelters = shelterRepository.findAll();
         return shelterDtoMapper.toShelterDtoList(shelters);
     }
 
+    @Transactional(readOnly = true)
     public ShelterDTO findById(Long id){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
+    @Transactional
     public Shelter createShelter(Shelter shelter){
         return shelterRepository.save(shelter);
     }
 
+    @Transactional
     public void removeShelter(Long id){
         shelterRepository.deleteById(id);
     }
 
+    @Transactional
     public ShelterDTO updateShelter(Long id, Map<String, Object> updates){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         updates.forEach((fieldName, fieldValue) -> {
@@ -59,12 +63,14 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
     }
 
+    @Transactional(readOnly = true)
     public List<PetDTO> findAllPets(Long id){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         List<PetDTO> pets = petDtoMapper.toPetDtoList(shelter.getPets());
         return pets;
     }
 
+    @Transactional
     public ShelterDTO addNewPet(Long id, PetDTO pet){
         Shelter shelter = shelterRepository.findById(id).orElseThrow();
         Pet newPet = new Pet();
@@ -76,6 +82,7 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
+    @Transactional
     public ResponseEntity<String> deletePetById(Long id, Long petId){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         Pet pet = petRepository.findById(petId).orElse(null);
@@ -87,6 +94,7 @@ public class ShelterService {
         return ResponseEntity.noContent().build();
     }
 
+    @Transactional
     public PetDTO updatePet(Long id, Long petId, Map<String, Object> updates){
         Shelter shelter = shelterRepository.findById(id).orElse(null);
         Pet pet = petRepository.findById(petId).orElse(null);

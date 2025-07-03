@@ -18,23 +18,25 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PetService {
 
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
     private final CommentRepository commentRepository;
 
+    @Transactional(readOnly = true)
     public List<PetDTO> findAllPets(){
         List<Pet> pets = petRepository.findAll();
         return petDtoMapper.toPetDtoList(pets);
     }
 
+    @Transactional(readOnly = true)
     public PetDetailsDTO findById(Long id){
         Pet pet = petRepository.findById(id).orElse(null);
         return petDtoMapper.toPetDetailsDTO(pet);
     }
 
+    @Transactional
     public PetDetailsDTO addComment(Long id, Comment comment){
         Pet pet = petRepository.findById(id).orElse(null);
         Comment newComment = new Comment();
@@ -47,6 +49,7 @@ public class PetService {
         return petDtoMapper.toPetDetailsDTO(pet);
     }
 
+    @Transactional
     public ResponseEntity<String> deleteCommentById(Long petId, Long commentId){
         Pet pet = petRepository.findById(petId).orElse(null);
         Comment comment = commentRepository.findById(commentId).orElse(null);

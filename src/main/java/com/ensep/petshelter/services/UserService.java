@@ -14,17 +14,18 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
 
+    @Transactional(readOnly = true)
     public UserEntityDTO findById(Long id){
         UserEntity userEntity = userRepository.findById(id).orElse(null);
         return userEntityDtoMapper.userEntityToUserEntityDto(userEntity);
     }
 
+    @Transactional(readOnly = true)
     public UserEntityDTO updateUser(Long id, Map<String, Object> updates){
         UserEntity user = userRepository.findById(id).orElse(null);
         updates.forEach((fieldName, fieldValue) -> {
@@ -37,6 +38,7 @@ public class UserService {
         return userEntityDtoMapper.userEntityToUserEntityDto(userRepository.save(user));
     }
 
+    @Transactional
     public void removeUser(Long id){
         userRepository.deleteById(id);
     }
