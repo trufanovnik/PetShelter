@@ -41,7 +41,7 @@ public class ShelterService {
 
     @Transactional(readOnly = true)
     public ShelterDTO findById(Long id){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
@@ -57,21 +57,21 @@ public class ShelterService {
 
     @Transactional
     public ShelterUpdateDTO updateShelter(Long id, ShelterUpdateDTO shelterUpdate){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         shelterUpdateMapper.updateShelterFromDto(shelterUpdate, shelter);
         return shelterDtoMapper.toShelterUpdateDto(shelterRepository.save(shelter));
     }
 
     @Transactional(readOnly = true)
     public List<PetDTO> findAllPets(Long id){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         List<PetDTO> pets = petDtoMapper.toPetDtoList(shelter.getPets());
         return pets;
     }
 
     @Transactional
     public ShelterDTO addNewPet(Long id, PetDTO pet){
-        Shelter shelter = shelterRepository.findById(id).orElseThrow();
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         Pet newPet = new Pet();
         newPet.setName(pet.getName());
         newPet.setDescription(pet.getDescription());
@@ -83,8 +83,8 @@ public class ShelterService {
 
     @Transactional
     public ResponseEntity<String> deletePetById(Long id, Long petId){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
-        Pet pet = petRepository.findById(petId).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        Pet pet = petRepository.findByIdOrThrow(petId);
         if (!shelter.getPets().contains(pet)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Данный питомец не принадлежит этому приюту.");
@@ -95,8 +95,8 @@ public class ShelterService {
 
     @Transactional
     public PetDTO updatePet(Long id, Long petId, PetDTO petUpdate){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
-        Pet pet = petRepository.findById(petId).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        Pet pet = petRepository.findByIdOrThrow(petId);
 
         petUpdateMapper.updatePetFromDto(petUpdate, pet);
         return petDtoMapper.toPetDto(petRepository.save(pet));
