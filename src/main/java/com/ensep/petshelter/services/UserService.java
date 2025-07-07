@@ -20,13 +20,13 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserEntityDTO findById(Long id){
-        UserEntity userEntity = userRepository.findById(id).orElse(null);
+        UserEntity userEntity = userRepository.findByIdOrThrow(id);
         return userEntityDtoMapper.userEntityToUserEntityDto(userEntity);
     }
 
     @Transactional
     public UserEntityDTO updateUser(Long id, UserEntityUpdateDTO userUpdate){
-        UserEntity user = userRepository.findById(id).orElse(null);
+        UserEntity user = userRepository.findByIdOrThrow(id);
 
         userEntityUpdateMapper.updateUserFromDto(userUpdate, user);
         return userEntityDtoMapper.userEntityToUserEntityDto(userRepository.save(user));
