@@ -3,9 +3,14 @@ package com.ensep.petshelter.controllers.rest;
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
 import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
+import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.services.ShelterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +24,16 @@ public class ShelterRest {
     private final ShelterService shelterService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShelterDTO>> findAllShelters(){
-        return ResponseEntity.ok(shelterService.findAllShelters());
+    public ResponseEntity<Page<ShelterDTO>> findAllShelters(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) AnimalKind animalKind,
+            @PageableDefault(
+                size = 10,
+                sort = "title",
+                direction = Sort.Direction.ASC)
+                Pageable pageable
+    ) {
+        return ResponseEntity.ok(shelterService.findAllShelters(city, animalKind, pageable));
     }
 
     @GetMapping("/{id}")
