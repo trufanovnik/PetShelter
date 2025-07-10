@@ -1,8 +1,8 @@
-INSERT INTO shelters (title, city, phone_number, email)
+INSERT INTO shelters (title, city, phone_number, email, password)
 VALUES
-    ('Лапа помощи', 'Москва', '+79991234567', 'pawhelp@mail.ru'),
-    ('Дом для хвостов', 'Санкт-Петербург', '+79997654321', 'tailshome@gmail.com'),
-    ('Усы и лапы', 'Казань', '+79876543210', 'whiskers@yandex.ru');
+    ('Лапа помощи', 'Москва', '+79991234567', 'pawhelp@mail.ru', 'pass123'),
+    ('Дом для хвостов', 'Санкт-Петербург', '+79997654321', 'tailshome@gmail.com', 'password'),
+    ('Усы и лапы', 'Казань', '+79876543210', 'whiskers@yandex.ru', 'securepass');
 
 INSERT INTO pets (name, description, animal_kind, shelter_id)
 VALUES
@@ -12,11 +12,11 @@ VALUES
     ('Рекс', 'Бывший служебный пёс', 'DOG', 3),
     ('Зефир', 'Белый кролик', 'OTHER', 2);
 
-INSERT INTO users (name, email, username, password)
+INSERT INTO users (username, password)
 VALUES
-    ('Иван Петров', 'ivan@example.com', 'ivan_p', 'securepass123'),
-    ('Мария Сидорова', 'maria@example.com', 'maria_s', 'mypassword456'),
-    ('Администратор', 'admin@shelter.ru', 'admin', 'adminpass');
+    ('ivan_p', 'securepass123'),
+    ('maria_s', 'mypassword456'),
+    ('admin', 'adminpass');
 
 INSERT INTO pet_photos (pet_id, photo_url)
 VALUES
