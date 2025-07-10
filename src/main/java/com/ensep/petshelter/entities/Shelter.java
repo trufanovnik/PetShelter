@@ -26,6 +26,9 @@ public class Shelter {
     @Column(name = "city", nullable = false)
     private String city;
 
+    @Column(name = "password", nullable = false)
+    private String password;
+
     @Column(name = "phone_number")
     private String number;
 

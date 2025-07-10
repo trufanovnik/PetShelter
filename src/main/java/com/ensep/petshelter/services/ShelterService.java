@@ -2,76 +2,82 @@ package com.ensep.petshelter.services;
 
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
+import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.mapper.PetDtoMapper;
+import com.ensep.petshelter.mapper.PetUpdateMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
+import com.ensep.petshelter.mapper.ShelterUpdateMapper;
 import com.ensep.petshelter.repositories.PetRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
+import com.ensep.petshelter.specifications.ShelterSpecification;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final ShelterDtoMapper shelterDtoMapper;
+    private final ShelterUpdateMapper shelterUpdateMapper;
     private final PetRepository petRepository;
     private final PetDtoMapper petDtoMapper;
+    private final PetUpdateMapper petUpdateMapper;
 
-    public ShelterService(ShelterRepository shelterRepository, PetRepository petRepository, ShelterDtoMapper shelterDtoMapper, PetDtoMapper petDtoMapper) {
-        this.shelterRepository = shelterRepository;
-        this.petRepository = petRepository;
-        this.shelterDtoMapper = shelterDtoMapper;
-        this.petDtoMapper = petDtoMapper;
+    @Transactional(readOnly = true)
+    public Page<ShelterDTO> findAllShelters(String city, AnimalKind animalKind, Pageable pageable) {
+        Specification<Shelter> spec = ShelterSpecification.distinct()
+                .and(ShelterSpecification.cityContains(city))
+                .and(ShelterSpecification.hasAnimalKind(animalKind));
+
+        Page<Shelter> shelters = shelterRepository.findAll(spec, pageable);
+        return shelters.map(shelterDtoMapper::toShelterDto);
     }
 
-    public List<ShelterDTO> findAllShelters(){
-        List<Shelter> shelters = shelterRepository.findAll();
-        return shelterDtoMapper.toShelterDtoList(shelters);
-    }
-
+    @Transactional(readOnly = true)
     public ShelterDTO findById(Long id){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
+    @Transactional
     public Shelter createShelter(Shelter shelter){
         return shelterRepository.save(shelter);
     }
 
+    @Transactional
     public void removeShelter(Long id){
         shelterRepository.deleteById(id);
     }
 
-    public ShelterDTO updateShelter(Long id, Map<String, Object> updates){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
-        updates.forEach((fieldName, fieldValue) -> {
-            Field field = ReflectionUtils.findField(Shelter.class, fieldName);
-            if (field != null){
-                field.setAccessible(true);
-                ReflectionUtils.setField(field, shelter, fieldValue);
-            }
-        });
-        return shelterDtoMapper.toShelterDto(shelterRepository.save(shelter));
+    @Transactional
+    public ShelterUpdateDTO updateShelter(Long id, ShelterUpdateDTO shelterUpdate){
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        shelterUpdateMapper.updateShelterFromDto(shelterUpdate, shelter);
+        return shelterDtoMapper.toShelterUpdateDto(shelterRepository.save(shelter));
     }
 
+    @Transactional(readOnly = true)
     public List<PetDTO> findAllPets(Long id){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         List<PetDTO> pets = petDtoMapper.toPetDtoList(shelter.getPets());
         return pets;
     }
 
+    @Transactional
     public ShelterDTO addNewPet(Long id, PetDTO pet){
-        Shelter shelter = shelterRepository.findById(id).orElseThrow();
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
         Pet newPet = new Pet();
         newPet.setName(pet.getName());
         newPet.setDescription(pet.getDescription());
@@ -81,9 +87,10 @@ public class ShelterService {
         return shelterDtoMapper.toShelterDto(shelter);
     }
 
-    public ResponseEntity<?> deletePetById(Long id, Long petId){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
-        Pet pet = petRepository.findById(petId).orElse(null);
+    @Transactional
+    public ResponseEntity<String> deletePetById(Long id, Long petId){
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        Pet pet = petRepository.findByIdOrThrow(petId);
         if (!shelter.getPets().contains(pet)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Данный питомец не принадлежит этому приюту.");
@@ -92,26 +99,12 @@ public class ShelterService {
         return ResponseEntity.noContent().build();
     }
 
-    public PetDTO updatePet(Long id, Long petId, Map<String, Object> updates){
-        Shelter shelter = shelterRepository.findById(id).orElse(null);
-        Pet pet = petRepository.findById(petId).orElse(null);
+    @Transactional
+    public PetDTO updatePet(Long id, Long petId, PetDTO petUpdate){
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        Pet pet = petRepository.findByIdOrThrow(petId);
 
-        updates.forEach((fieldName, fieldValue) -> {
-            Field field = ReflectionUtils.findField(Pet.class, fieldName);
-            if (field != null){
-                field.setAccessible(true);
-                if (field.getType().isEnum() && fieldValue instanceof String) {
-                    try {
-                        Object enumValue = Enum.valueOf((Class<Enum>) field.getType(), ((String) fieldValue).toUpperCase());
-                        ReflectionUtils.setField(field, pet, enumValue);
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException("Некорректное значение для поля " + fieldName + ": " + fieldValue, e);
-                    }
-                } else {
-                    ReflectionUtils.setField(field, pet, fieldValue);
-                }
-            }
-        });
+        petUpdateMapper.updatePetFromDto(petUpdate, pet);
         return petDtoMapper.toPetDto(petRepository.save(pet));
     }
 }

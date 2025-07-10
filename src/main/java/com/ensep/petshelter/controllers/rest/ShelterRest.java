@@ -2,36 +2,38 @@ package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.dto.pet.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
-import com.ensep.petshelter.entities.Pet;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
+import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.entities.Shelter;
-import com.ensep.petshelter.repositories.PetRepository;
-import com.ensep.petshelter.repositories.ShelterRepository;
 import com.ensep.petshelter.services.ShelterService;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/shelter")
 public class ShelterRest {
 
     private final ShelterService shelterService;
-    private final ShelterRepository shelterRepository;
-    private final PetRepository petRepository;
-
-    public ShelterRest(ShelterService shelterService, ShelterRepository shelterRepository, PetRepository petRepository) {
-        this.shelterService = shelterService;
-        this.shelterRepository = shelterRepository;
-        this.petRepository = petRepository;
-    }
 
     @GetMapping("/all")
-    public ResponseEntity<List<ShelterDTO>> findAllShelters(){
-        return ResponseEntity.ok(shelterService.findAllShelters());
+    public ResponseEntity<Page<ShelterDTO>> findAllShelters(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) AnimalKind animalKind,
+            @PageableDefault(
+                size = 10,
+                sort = "title",
+                direction = Sort.Direction.ASC)
+                Pageable pageable
+    ) {
+        return ResponseEntity.ok(shelterService.findAllShelters(city, animalKind, pageable));
     }
 
     @GetMapping("/{id}")
@@ -50,66 +52,32 @@ public class ShelterRest {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/{id}")
-    public ResponseEntity<?> updateShelter(@PathVariable Long id, @RequestBody Map<String, Object> updates){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
-        return ResponseEntity.ok(shelterService.updateShelter(id, updates));
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ShelterUpdateDTO> updateShelter(@PathVariable Long id,
+                                                          @RequestBody ShelterUpdateDTO shelterUpdate){
+        return ResponseEntity.ok(shelterService.updateShelter(id, shelterUpdate));
     }
 
     @GetMapping(value = "/{id}/pets")
-    public ResponseEntity<?> findAllPets(@PathVariable Long id){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
+    public ResponseEntity<List<PetDTO>> findAllPets(@PathVariable Long id){
         return ResponseEntity.ok(shelterService.findAllPets(id));
     }
 
     @PostMapping(value = "/{id}/pets/addPet")
-    public ResponseEntity<?> addNewPet(@PathVariable Long id, @RequestBody PetDTO pet){
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
+    public ResponseEntity<ShelterDTO> addNewPet(@PathVariable Long id, @RequestBody PetDTO pet){
         return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
-    @PatchMapping(value = "/{id}/pets/{petId}")
-    public ResponseEntity<?> updatePet(@PathVariable Long id,
+    @PutMapping(value = "/{id}/pets/{petId}")
+    public ResponseEntity<PetDTO> updatePet(@PathVariable Long id,
                                        @PathVariable Long petId,
-                                       @RequestBody Map<String, Object> updates) {
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (pet.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Питомец с ID: " + petId + " не найден");
-        }
-        return ResponseEntity.ok(shelterService.updatePet(id, petId, updates));
+                                       @RequestBody PetDTO petUpdate) {
+        return ResponseEntity.ok(shelterService.updatePet(id, petId, petUpdate));
     }
 
     @DeleteMapping(value = "/{id}/pets/{petId}")
-    public ResponseEntity<?> deletePetById(@PathVariable Long id,
+    public ResponseEntity<String> deletePetById(@PathVariable Long id,
                                            @PathVariable Long petId) {
-        Optional<Shelter> shelter = shelterRepository.findById(id);
-        if (shelter.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Приют с ID: " + id + " не найден");
-        }
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (pet.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Питомец с ID: " + petId + " не найден");
-        }
         return shelterService.deletePetById(id, petId);
     }
 }
