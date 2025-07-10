@@ -16,11 +16,11 @@ INSERT INTO users (username, account_id) VALUES
 ('animalLover88', 5);
 
 INSERT INTO pets (name, description, animal_kind, shelter_id, created_at) VALUES
-('Барсик', 'Очень ласковый кот', 'Кот', 1, CURRENT_TIMESTAMP),
-('Шарик', 'Весёлый пёс, любит гулять', 'Пёс', 1, CURRENT_TIMESTAMP),
-('Лапа', 'Маленький любопытный щенок', 'Пёс', 2, CURRENT_TIMESTAMP),
-('Муся', 'Спокойная взрослая кошка', 'Кошка', 2, CURRENT_TIMESTAMP),
-('Рыжик', 'Любит играть с детьми', 'Кот', 1, CURRENT_TIMESTAMP);
+('Барсик', 'Очень ласковый кот', 'CAT', 1, CURRENT_TIMESTAMP),
+('Шарик', 'Весёлый пёс, любит гулять', 'DOG', 1, CURRENT_TIMESTAMP),
+('Лапа', 'Маленький любопытный щенок', 'DOG', 2, CURRENT_TIMESTAMP),
+('Муся', 'Спокойная взрослая кошка', 'CAT', 2, CURRENT_TIMESTAMP),
+('Рыжик', 'Любит играть с детьми', 'CAT', 1, CURRENT_TIMESTAMP);
 
 INSERT INTO pet_photos (pet_id, photo_url) VALUES
 (1, 'https://example.com/images/barsik.jpg'),
