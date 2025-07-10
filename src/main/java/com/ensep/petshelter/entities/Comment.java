@@ -6,7 +6,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Where(clause = "(author_id IS NOT NULL AND shelter_id IS NULL) OR (shelter_id IS NOT NULL AND author_id IS NULL)")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,23 +27,14 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    private UserEntity author;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shelter_id")
-    private Shelter shelter;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @PrePersist
-    @PreUpdate
-    private void validate() {
-        if ((author == null && shelter == null) ||
-                (author != null && shelter != null)) {
-            throw new IllegalStateException("Comment must have exactly one author");
-        }
+    public boolean isOwnedBy(Account account) {
+        return this.account != null && this.account.getId().equals(account.getId());
     }
 }
