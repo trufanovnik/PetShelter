@@ -1,10 +1,10 @@
 INSERT INTO accounts (login, password, account_type, created_at) VALUES
-('shelter1@example.com', 'pass123', 'SHELTER', CURRENT_TIMESTAMP),
-('shelter2@example.com', 'pass456', 'SHELTER', CURRENT_TIMESTAMP),
-('user1', 'pass789', 'USER', CURRENT_TIMESTAMP),
-('user2', 'pass321', 'USER', CURRENT_TIMESTAMP),
-('user3', 'pass654', 'USER', CURRENT_TIMESTAMP),
-('admin@example.com', 'adminpass', 'ADMIN', CURRENT_TIMESTAMP);
+('shelter1@example.com', '$2a$10$IsF4x.4I49MCAcaT0EVtt.rZ1ySA5pDk/aKKaPkIs6nS0O.GF7G5G', 'SHELTER', CURRENT_TIMESTAMP),
+('shelter2@example.com', '$2a$10$7GlQ5xDQ8DWPG1BzZs4rC.h5DZyqRlhENDjkNxnDt.zvCEVEYyeBG', 'SHELTER', CURRENT_TIMESTAMP),
+('user1', '$2a$10$e7nzPMtCeuLBkK9dt1KZXurMNOLmBbVlzL6RNzgIHZ3i8kKl2.oae', 'USER', CURRENT_TIMESTAMP),
+('user2', '$2a$10$L3N/iurcUAnps/gKlcUpHO9UsdoggQHPiByXLPd9qgExjOYq23duG', 'USER', CURRENT_TIMESTAMP),
+('user3', '$2a$10$mESjr/we7mbmeKppOfnzLu5Ss2jKV4FqKlmSiUvf9B/aRCC6GobjG', 'USER', CURRENT_TIMESTAMP),
+('admin@example.com', '$2a$10$ZbQDXsrWYJTHP6Q.nNrE4u5hnY4LycUXEEVjyPdDnzVJ5mysTf4Da', 'ADMIN', CURRENT_TIMESTAMP);
 
 INSERT INTO shelters (title, city, phone_number, email, account_id) VALUES
 ('Happy Tails', 'Минск', '1234567890', 'contact@happytails.by', 1),
