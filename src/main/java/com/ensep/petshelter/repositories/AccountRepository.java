@@ -9,6 +9,14 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByLogin(String login);
 
+    default boolean existByLogin(String login) {
+        if (!findByLogin(login).isEmpty()){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     default Account findByLoginOrThrow(String login) {
         return findByLogin(login).orElseThrow(()->
                 new UsernameNotFoundException("Аккаунт с логином " + login + " не найден"));
