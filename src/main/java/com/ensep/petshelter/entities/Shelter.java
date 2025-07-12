@@ -26,18 +26,16 @@ public class Shelter {
     @Column(name = "city", nullable = false)
     private String city;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "phone_number")
     private String number;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
 
     @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pet> pets = new ArrayList<>();
-
-    @OneToMany(mappedBy = "shelter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
 }
