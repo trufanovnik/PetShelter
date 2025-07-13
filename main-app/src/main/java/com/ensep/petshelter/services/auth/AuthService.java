@@ -1,5 +1,8 @@
 package com.ensep.petshelter.services.auth;
 
+import com.ensep.petshelter.config.security.jwt.JwtUtils;
+import com.ensep.petshelter.dto.AuthenticationResponse;
+import com.ensep.petshelter.dto.LoginRequest;
 import com.ensep.petshelter.dto.ShelterRegistrationRequest;
 import com.ensep.petshelter.dto.UserRegistrationRequest;
 import com.ensep.petshelter.entities.Account;
@@ -14,6 +17,10 @@ import com.ensep.petshelter.repositories.AccountRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import com.ensep.petshelter.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +36,9 @@ public class AuthService {
     private final UserEntityMapper userEntityMapper;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils;
 
     @Transactional
     public void registerShelter(ShelterRegistrationRequest request) {
@@ -59,5 +69,16 @@ public class AuthService {
         UserEntity user = userEntityMapper.userRequestToUserEntity(request);
         user.setAccount(account);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public ResponseEntity<AuthenticationResponse> login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword())
+        );
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLogin());
+        final String jwt = jwtUtils.generateToken(userDetails);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

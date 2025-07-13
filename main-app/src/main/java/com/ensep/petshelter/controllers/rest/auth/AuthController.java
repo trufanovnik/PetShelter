@@ -1,5 +1,7 @@
 package com.ensep.petshelter.controllers.rest.auth;
 
+import com.ensep.petshelter.dto.AuthenticationResponse;
+import com.ensep.petshelter.dto.LoginRequest;
 import com.ensep.petshelter.dto.ShelterRegistrationRequest;
 import com.ensep.petshelter.dto.UserRegistrationRequest;
 import com.ensep.petshelter.services.auth.AuthService;
@@ -30,5 +32,10 @@ public class AuthController {
             @Valid @RequestBody UserRegistrationRequest request) {
         authService.registerUser(request);
         return ResponseEntity.ok("Пользователь успешно зарегистрирован");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
