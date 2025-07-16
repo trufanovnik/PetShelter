@@ -9,7 +9,6 @@ import com.ensep.petshelter.entities.Account;
 import com.ensep.petshelter.entities.AccountType;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.entities.UserEntity;
-import com.ensep.petshelter.exceptions.AccountExistException;
 import com.ensep.petshelter.mapper.AccountMapper;
 import com.ensep.petshelter.mapper.ShelterMapper;
 import com.ensep.petshelter.mapper.UserEntityMapper;
@@ -42,9 +41,7 @@ public class AuthService {
 
     @Transactional
     public void registerShelter(ShelterRegistrationRequest request) {
-        if (accountRepository.existByLogin(request.getEmail())){
-            throw new AccountExistException("Приют с таким email уже существует");
-        }
+
         Account account = accountMapper.shelterRequestToAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));
         account.setAccountType(AccountType.SHELTER);
@@ -57,9 +54,6 @@ public class AuthService {
 
     @Transactional
     public void registerUser(UserRegistrationRequest request) {
-        if (accountRepository.existByLogin(request.getUsername())){
-            throw new AccountExistException("Пользователь с таким username существует");
-        }
 
         Account account = accountMapper.userRequestToAccount(request);
         account.setPassword(passwordEncoder.encode(request.getPassword()));

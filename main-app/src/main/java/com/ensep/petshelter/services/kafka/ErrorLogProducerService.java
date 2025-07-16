@@ -11,7 +11,7 @@ public class ErrorLogProducerService {
 
     private final KafkaTemplate<String, ErrorLogDTO> kafkaTemplate;
 
-    public void sendError(ErrorLogDTO errorLog) {
+    public void sendErrorWithTimeout(ErrorLogDTO errorLog) {
         kafkaTemplate.send("logs-topic", errorLog);
     }
 }

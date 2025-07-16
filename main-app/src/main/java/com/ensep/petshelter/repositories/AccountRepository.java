@@ -10,7 +10,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByLogin(String login);
 
     default boolean existByLogin(String login) {
-        if (!findByLogin(login).isEmpty()){
+        if (findByLogin(login).isPresent()){
             return true;
         } else {
             return false;
