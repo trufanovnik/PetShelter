@@ -32,6 +32,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.38</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>com.ensep</groupId>
             <artifactId>shared</artifactId>
             <version>0.0.1-SNAPSHOT</version>
