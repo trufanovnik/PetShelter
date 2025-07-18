@@ -1,8 +1,6 @@
-package com.ensep.logservice.controller;
+package com.ensep.petshelter.controllers.rest.logs;
 
-import com.ensep.logservice.entities.ErrorLog;
-import com.ensep.logservice.mapper.ErrorLogMapper;
-import com.ensep.logservice.repositories.ErrorLogRepository;
+import com.ensep.petshelter.services.feign.LogServiceClient;
 import com.ensep.shared.dto.ErrorLogDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +12,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/logs")
 @RequiredArgsConstructor
-public class ErrorLogController {
+public class LogClientController {
 
-    private final ErrorLogRepository errorLogRepository;
-    private final ErrorLogMapper errorLogMapper;
+    private final LogServiceClient logServiceClient;
 
     @GetMapping
     public List<ErrorLogDTO> getLogs() {
-        return errorLogMapper.toDtoList(errorLogRepository.findAll());
+        return logServiceClient.getLogs();
     }
 }
