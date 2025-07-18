@@ -1,7 +1,9 @@
 package com.ensep.logservice.controller;
 
 import com.ensep.logservice.entities.ErrorLog;
+import com.ensep.logservice.mapper.ErrorLogMapper;
 import com.ensep.logservice.repositories.ErrorLogRepository;
+import com.ensep.shared.dto.ErrorLogDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ErrorLogController {
 
     private final ErrorLogRepository errorLogRepository;
+    private final ErrorLogMapper errorLogMapper;
 
     @GetMapping
-    public List<ErrorLog> getLogs() {
-        return errorLogRepository.findAll();
+    public List<ErrorLogDTO> getLogs()
+    {
+        return errorLogMapper.toDtoList(errorLogRepository.findAll());
     }
 }
