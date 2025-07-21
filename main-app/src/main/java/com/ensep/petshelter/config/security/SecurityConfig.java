@@ -28,7 +28,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("api/logs").permitAll()
+                        .requestMatchers("/api/logs").permitAll()
+                        .requestMatchers("/api/shelter/all").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/public").permitAll()
                         .requestMatchers("/api/test/private").authenticated()

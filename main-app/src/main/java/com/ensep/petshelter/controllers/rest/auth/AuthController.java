@@ -1,9 +1,9 @@
 package com.ensep.petshelter.controllers.rest.auth;
 
-import com.ensep.petshelter.dto.AuthenticationResponse;
-import com.ensep.petshelter.dto.LoginRequest;
-import com.ensep.petshelter.dto.ShelterRegistrationRequest;
-import com.ensep.petshelter.dto.UserRegistrationRequest;
+import com.ensep.petshelter.dto.auth.AuthenticationResponse;
+import com.ensep.petshelter.dto.auth.LoginRequest;
+import com.ensep.petshelter.dto.shelter.ShelterRegistrationRequest;
+import com.ensep.petshelter.dto.auth.UserRegistrationRequest;
 import com.ensep.petshelter.services.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

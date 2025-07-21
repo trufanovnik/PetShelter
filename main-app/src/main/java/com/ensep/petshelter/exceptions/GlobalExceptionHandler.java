@@ -35,13 +35,13 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllException(Exception ex) {
-        createAndSendErrorLog(ex);
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Произошла непредвиденная ошибка.");
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<String> handleAllException(Exception ex) {
+//        createAndSendErrorLog(ex);
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body("Произошла непредвиденная ошибка.");
+//    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolation(DataIntegrityViolationException ex) {

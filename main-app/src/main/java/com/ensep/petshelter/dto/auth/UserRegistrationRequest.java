@@ -1,4 +1,4 @@
-package com.ensep.petshelter.dto;
+package com.ensep.petshelter.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
