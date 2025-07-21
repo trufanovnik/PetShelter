@@ -29,4 +29,10 @@ public class ShelterService {
         Page<Shelter> shelters = shelterRepository.findAll(spec, pageable);
         return shelters.map(shelterDtoMapper::toShelterDto);
     }
+
+    @Transactional(readOnly = true)
+    public ShelterDTO findById(Long id){
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        return shelterDtoMapper.toShelterDto(shelter);
+    }
 }
