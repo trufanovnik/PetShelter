@@ -7,13 +7,13 @@ INSERT INTO accounts (login, password, account_type, created_at) VALUES
 ('admin@example.com', '$2a$10$ZbQDXsrWYJTHP6Q.nNrE4u5hnY4LycUXEEVjyPdDnzVJ5mysTf4Da', 'ADMIN', CURRENT_TIMESTAMP);
 
 INSERT INTO shelters (title, city, phone_number, email, account_id) VALUES
-('Happy Tails', 'Минск', '1234567890', 'contact@happytails.by', 1),
-('Dog Haven', 'Гомель', '2345678901', 'info@doghaven.by', 2);
+('Happy Tails', 'Минск', '1234567890', 'shelter1@example.com', 1),
+('Dog Haven', 'Гомель', '2345678901', 'shelter2@example.com', 2);
 
 INSERT INTO users (username, account_id) VALUES
-('catlover99', 3),
-('doggoFan22', 4),
-('animalLover88', 5);
+('user1', 3),
+('user2', 4),
+('user3', 5);
 
 INSERT INTO pets (name, description, animal_kind, shelter_id, created_at) VALUES
 ('Барсик', 'Очень ласковый кот', 'CAT', 1, CURRENT_TIMESTAMP),

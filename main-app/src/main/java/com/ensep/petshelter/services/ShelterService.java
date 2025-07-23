@@ -1,5 +1,6 @@
 package com.ensep.petshelter.services;
 
+import com.ensep.petshelter.config.security.CustomUserDetails;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
 import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.entities.Shelter;
@@ -34,5 +35,16 @@ public class ShelterService {
     public ShelterDTO findById(Long id){
         Shelter shelter = shelterRepository.findByIdOrThrow(id);
         return shelterDtoMapper.toShelterDto(shelter);
+    }
+
+    @Transactional
+    public void removeShelter(Long id, CustomUserDetails userDetails) {
+        String role = userDetails.getAuthorities().iterator().next().getAuthority();
+        String login = userDetails.getAccount().getLogin();
+        Shelter shelter = shelterRepository.findByEmail(login);
+
+        if (role.equals("ROLE_ADMIN") || id.equals(shelter.getId())) {
+            shelterRepository.delete(shelter);
+        }
     }
 }

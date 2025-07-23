@@ -1,5 +1,6 @@
 package com.ensep.petshelter.controllers.rest;
 
+import com.ensep.petshelter.config.security.CustomUserDetails;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
 import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.services.ShelterService;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,5 +36,14 @@ public class ShelterController {
     @GetMapping("/{id}")
     public ResponseEntity<ShelterDTO> findById(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(shelterService.findById(id));
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> deleteShelter(
+            @PathVariable(name = "id") Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        shelterService.removeShelter(id, userDetails);
+        return ResponseEntity.noContent().build();
     }
 }
