@@ -65,4 +65,12 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
+    @PreAuthorize("@shelterSecurity.isOwnerOrAdmin(#id, authentication)")
+    @PutMapping(value = "/{id}/pets/{petId}")
+    public ResponseEntity<PetDTO> updatePet(@PathVariable Long id,
+                                            @PathVariable Long petId,
+                                            @RequestBody PetDTO petUpdate) {
+        return ResponseEntity.ok(shelterService.updatePet(petId, petUpdate));
+    }
+
 }

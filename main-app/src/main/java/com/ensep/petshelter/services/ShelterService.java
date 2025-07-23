@@ -8,6 +8,8 @@ import com.ensep.petshelter.entities.Account;
 import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.entities.Pet;
 import com.ensep.petshelter.entities.Shelter;
+import com.ensep.petshelter.mapper.PetDtoMapper;
+import com.ensep.petshelter.mapper.PetUpdateMapper;
 import com.ensep.petshelter.mapper.ShelterDtoMapper;
 import com.ensep.petshelter.mapper.ShelterUpdateMapper;
 import com.ensep.petshelter.repositories.AccountRepository;
@@ -31,6 +33,8 @@ public class ShelterService {
     private final ShelterUpdateMapper shelterUpdateMapper;
     private final AccountRepository accountRepository;
     private final PetRepository petRepository;
+    private final PetDtoMapper petDtoMapper;
+    private final PetUpdateMapper petUpdateMapper;
 
     @Transactional(readOnly = true)
     public Page<ShelterDTO> findAllShelters(String city, AnimalKind animalKind, Pageable pageable) {
@@ -78,5 +82,13 @@ public class ShelterService {
         newPet.setShelter(shelter);
         petRepository.save(newPet);
         return shelterDtoMapper.toShelterDto(shelter);
+    }
+
+    @Transactional
+    public PetDTO updatePet(Long petId, PetDTO petUpdate){
+        Pet pet = petRepository.findByIdOrThrow(petId);
+
+        petUpdateMapper.updatePetFromDto(petUpdate, pet);
+        return petDtoMapper.toPetDto(petRepository.save(pet));
     }
 }
