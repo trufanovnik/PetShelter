@@ -2,6 +2,7 @@ package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.config.security.CustomUserDetails;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
+import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.AnimalKind;
 import com.ensep.petshelter.services.ShelterService;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,13 @@ public class ShelterController {
         shelterService.removeShelter(id, userDetails);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<ShelterUpdateDTO> updateShelter(
+            @PathVariable(name = "id") Long id,
+            @RequestBody ShelterUpdateDTO shelterUpdate,
+            @AuthenticationPrincipal CustomUserDetails userDetails){
+        return ResponseEntity.ok(shelterService.updateShelter(id, shelterUpdate, userDetails));
+    }
+
 }
