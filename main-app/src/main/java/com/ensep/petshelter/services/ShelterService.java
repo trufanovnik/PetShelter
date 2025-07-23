@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,5 +92,17 @@ public class ShelterService {
 
         petUpdateMapper.updatePetFromDto(petUpdate, pet);
         return petDtoMapper.toPetDto(petRepository.save(pet));
+    }
+
+    @Transactional
+    public ResponseEntity<String> deletePetById(Long id, Long petId){
+        Shelter shelter = shelterRepository.findByIdOrThrow(id);
+        Pet pet = petRepository.findByIdOrThrow(petId);
+        if (!shelter.getPets().contains(pet)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("У приюта нет этого питомца.");
+        }
+        shelter.getPets().remove(pet);
+        return ResponseEntity.noContent().build();
     }
 }

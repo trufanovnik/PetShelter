@@ -73,4 +73,11 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.updatePet(petId, petUpdate));
     }
 
+    @PreAuthorize("@shelterSecurity.isOwnerOrAdmin(#id, authentication)")
+    @DeleteMapping(value = "/{id}/pets/{petId}")
+    public ResponseEntity<String> deletePetById(@PathVariable Long id,
+                                                @PathVariable Long petId) {
+        return shelterService.deletePetById(id, petId);
+    }
+
 }
