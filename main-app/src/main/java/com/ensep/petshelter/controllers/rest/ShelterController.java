@@ -1,6 +1,7 @@
 package com.ensep.petshelter.controllers.rest;
 
 import com.ensep.petshelter.config.security.CustomUserDetails;
+import com.ensep.petshelter.dto.pets.PetDTO;
 import com.ensep.petshelter.dto.shelter.ShelterDTO;
 import com.ensep.petshelter.dto.shelter.ShelterUpdateDTO;
 import com.ensep.petshelter.entities.AnimalKind;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,21 +41,28 @@ public class ShelterController {
         return ResponseEntity.ok(shelterService.findById(id));
     }
 
+    @PreAuthorize("@shelterSecurity.isOwnerOrAdmin(#id, authentication)")
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deleteShelter(
-            @PathVariable(name = "id") Long id,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        shelterService.removeShelter(id, userDetails);
+    public ResponseEntity<Void> deleteShelter(@PathVariable(name = "id") Long id) {
+        shelterService.removeShelter(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("@shelterSecurity.isOwnerOrAdmin(#id, authentication)")
     @PutMapping(value = "/{id}")
     public ResponseEntity<ShelterUpdateDTO> updateShelter(
             @PathVariable(name = "id") Long id,
             @RequestBody ShelterUpdateDTO shelterUpdate,
             @AuthenticationPrincipal CustomUserDetails userDetails){
         return ResponseEntity.ok(shelterService.updateShelter(id, shelterUpdate, userDetails));
+    }
+
+    @PreAuthorize("@shelterSecurity.isOwnerOrAdmin(#id, authentication)")
+    @PostMapping(value = "/{id}/pets/addPet")
+    public ResponseEntity<ShelterDTO> addNewPet(
+            @PathVariable(name = "id") Long id,
+            @RequestBody PetDTO pet) {
+        return ResponseEntity.ok(shelterService.addNewPet(id, pet));
     }
 
 }

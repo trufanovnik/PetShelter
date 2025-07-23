@@ -68,13 +68,6 @@ public class AuthService {
     @Transactional
     public ResponseEntity<AuthenticationResponse> login(LoginRequest request) {
 
-        System.out.println("Login: " + request.getLogin());
-        System.out.println("Password: " + request.getPassword());
-        Account acc = accountRepository.findByLogin(request.getLogin()).orElse(null);
-        if (acc != null) {
-            System.out.println("Account found. Encoded password in DB: " + acc.getPassword());
-        }
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getLogin(), request.getPassword())
         );
