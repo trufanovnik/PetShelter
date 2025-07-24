@@ -1,6 +1,6 @@
 package com.ensep.petshelter.mapper;
 
-import com.ensep.petshelter.dto.shelter.ShelterRegistrationRequest;
+import com.ensep.petshelter.dto.auth.ShelterRegistrationRequest;
 import com.ensep.petshelter.entities.Shelter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

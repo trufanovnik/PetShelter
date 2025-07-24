@@ -3,7 +3,7 @@ package com.ensep.petshelter.services.auth;
 import com.ensep.petshelter.config.security.jwt.JwtUtils;
 import com.ensep.petshelter.dto.auth.AuthenticationResponse;
 import com.ensep.petshelter.dto.auth.LoginRequest;
-import com.ensep.petshelter.dto.shelter.ShelterRegistrationRequest;
+import com.ensep.petshelter.dto.auth.ShelterRegistrationRequest;
 import com.ensep.petshelter.dto.auth.UserRegistrationRequest;
 import com.ensep.petshelter.entities.Account;
 import com.ensep.petshelter.entities.AccountType;
