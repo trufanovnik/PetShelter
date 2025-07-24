@@ -34,4 +34,10 @@ public class PetController {
     public ResponseEntity<PetDetailsDTO> deleteComment(@PathVariable Long id, @PathVariable Long commentId) {
         return ResponseEntity.ok(petService.deleteComment(id, commentId));
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<PetDetailsDTO> doLike(@PathVariable Long id,
+                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(petService.doLike(id, userDetails));
+    }
 }
