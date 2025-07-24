@@ -40,4 +40,9 @@ public class UserService {
 
         return mapper.toDto(userRepository.save(user));
     }
+
+    @Transactional
+    public void removeUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }

@@ -32,4 +32,11 @@ public class UserController {
 
         return ResponseEntity.ok(userService.updateUser(id, userUpdate, userDetails));
     }
+
+    @PreAuthorize("@userSecurity.isOwnerOrAdmin(#id, authentication)")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id){
+        userService.removeUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }
