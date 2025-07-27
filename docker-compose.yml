@@ -10,23 +10,52 @@ services:
     ports:
       - "2181:2181"
     networks:
-      - kafka-network
+      - petshelter-network
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_started
     ports:
       - "9092:9092"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "kafka:9092", "--list"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
     networks:
-      - kafka-network
+      - petshelter-network
+
+  postgres-main:
+    image: postgres:15
+    container_name: postgres-main
+    environment:
+      POSTGRES_DB: main_db
+      POSTGRES_USER: main_user
+      POSTGRES_PASSWORD: main_password
+      POSTGRES_SCHEMA: petshelter
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_main_data:/var/lib/postgresql/data
+    networks:
+      - petshelter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U main_user -d main_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   postgres-logs:
     image: postgres:15
@@ -40,11 +69,62 @@ services:
     volumes:
       - postgres_logs_data:/var/lib/postgresql/data
     networks:
-      - kafka-network
+      - petshelter-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U logs_user -d logs_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  main-app:
+    build:
+      context: ./main-app
+      dockerfile: Dockerfile
+    container_name: main-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres-main:
+        condition: service_healthy
+    environment:
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_LOCATIONS: "classpath:db/migration"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-main:5432/main_db?currentSchema=petshelter
+      SPRING_DATASOURCE_USERNAME: main_user
+      SPRING_DATASOURCE_PASSWORD: main_password
+      LOG_SERVICE_URL: http://log-service:8081
+    networks:
+      - petshelter-network
+
+  log-service:
+    build:
+      context: ./log-service
+      dockerfile: Dockerfile
+    container_name: log-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres-logs:
+        condition: service_healthy
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-logs:5432/logs_db
+      SPRING_DATASOURCE_USERNAME: logs_user
+      SPRING_DATASOURCE_PASSWORD: logs_password
+    networks:
+      - petshelter-network
 
 networks:
-  kafka-network:
+  petshelter-network:
     driver: bridge
 
 volumes:
+  postgres_main_data:
   postgres_logs_data:
