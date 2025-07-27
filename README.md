@@ -19,7 +19,7 @@
 - **Flyway** (миграции и тестовые данные)
 - **Feign** (межсервисное взаимодействие)
 - **Kafka** (асинхронная отправка логов)
-- **Docker** (log-service)
+- **Docker** (main-app, log-service, kafka, postgres)
 - **Maven** (мульти-модульный проект)
 
 ### Модули
@@ -27,22 +27,31 @@
 - `log-service` — сервис для сбора и хранения логов ошибок
 - `shared` — общие DTO для взаимодействия между сервисами
 
-## Быстрый старт (локально)
+## Быстрый старт через Docker Compose
 
 1. **Клонируйте репозиторий:**
    ```bash
    git clone https://github.com/trufanovnik/PetShelter/tree/main
    ```
-2. **Запустите log-service через Docker:**
+2. **Соберите проект:**
    ```bash
-   docker-compose up -d
+   mvn clean package -DskipTests
    ```
-3. **Соберите и запустите main-app:**
+3. **Соберите и запустите сервисы:**
    ```bash
-   cd main-app
-   mvn spring-boot:run
+   docker-compose up --build
    ```
-   По умолчанию приложение стартует на `localhost:8080`.
+   После запуска система будет доступна:
+
+   - Основное приложение: http://localhost:8080
+
+   - Лог-сервис: http://localhost:8081
+
+   - Kafka: localhost:9092 (для приложений), localhost:29092 (для внешних клиентов)
+
+   - PostgreSQL (основная БД): localhost:5432 (логин: main_user, пароль: main_password)
+
+   - PostgreSQL (логи): localhost:5433 (логин: logs_user, пароль: logs_password)
 
 > **Примечание:** Все необходимые настройки (БД, JWT-секреты) заданы в `application.properties` для учебных целей. Вы можете изменить их под себя.
 
