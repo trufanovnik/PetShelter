@@ -1,9 +1,6 @@
 package com.ensep.petshelter.controllers.rest.auth;
 
-import com.ensep.petshelter.dto.auth.AuthenticationResponse;
-import com.ensep.petshelter.dto.auth.LoginRequest;
-import com.ensep.petshelter.dto.auth.ShelterRegistrationRequest;
-import com.ensep.petshelter.dto.auth.UserRegistrationRequest;
+import com.ensep.petshelter.dto.auth.*;
 import com.ensep.petshelter.services.auth.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +34,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    private ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        return authService.refreshToken(request.getRefreshToken());
     }
 }
