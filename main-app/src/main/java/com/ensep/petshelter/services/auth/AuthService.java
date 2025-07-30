@@ -9,12 +9,14 @@ import com.ensep.petshelter.entities.Account;
 import com.ensep.petshelter.entities.AccountType;
 import com.ensep.petshelter.entities.Shelter;
 import com.ensep.petshelter.entities.UserEntity;
+import com.ensep.petshelter.exceptions.TokenRefreshException;
 import com.ensep.petshelter.mapper.AccountMapper;
 import com.ensep.petshelter.mapper.ShelterMapper;
 import com.ensep.petshelter.mapper.UserEntityMapper;
 import com.ensep.petshelter.repositories.AccountRepository;
 import com.ensep.petshelter.repositories.ShelterRepository;
 import com.ensep.petshelter.repositories.UserRepository;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -74,6 +76,27 @@ public class AuthService {
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLogin());
         final String jwt = jwtUtils.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        final String jwtRefresh = jwtUtils.generateRefreshToken(userDetails);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, jwtRefresh));
+    }
+
+    @Transactional
+    public ResponseEntity<AuthenticationResponse> refreshToken(String refreshToken) {
+        try {
+            if (!jwtUtils.isRefreshToken(refreshToken)) {
+                throw new TokenRefreshException("Invalid token type [not a refresh token]");
+            }
+            if (jwtUtils.isTokenExpired(refreshToken)) {
+                throw new TokenRefreshException("Token expired");
+            }
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(jwtUtils.extractUsername(refreshToken));
+            final String jwt = jwtUtils.generateToken(userDetails);
+            final String jwtRefresh = jwtUtils.generateRefreshToken(userDetails);
+
+            return ResponseEntity.ok(new AuthenticationResponse(jwt, jwtRefresh));
+
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new TokenRefreshException("Invalid refresh token: " + e.getMessage());
+        }
     }
 }
