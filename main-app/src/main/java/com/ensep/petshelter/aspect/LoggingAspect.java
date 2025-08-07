@@ -19,10 +19,6 @@ import java.util.Arrays;
 @Slf4j
 public class LoggingAspect {
 
-    public LoggingAspect() {
-        log.info("LoggingAspect initialized!"); // Сообщение должно появиться при старте
-    }
-
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void controllerLog() {}
 
